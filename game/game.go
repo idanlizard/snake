@@ -92,7 +92,7 @@ func (this *game) Start() {
 	this.addApple()
 	this.renderer.Render(this.board)
 
-	timer := time.NewTicker(time.Second / 5)
+	timer := time.NewTicker(time.Second / 8)
 
 	listener := NewKeyboardListener()
 	defer listener.Stop()
