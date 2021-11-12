@@ -32,6 +32,7 @@ type game struct {
 	frameTime <-chan struct{}
 	once      sync.Once
 	renderer  Renderer
+	info      *GameInfo
 }
 
 func (this *game) end() {
@@ -58,6 +59,7 @@ func New(n, m int) (Game, error) {
 		snek:     s,
 		stop:     make(chan struct{}, 1),
 		renderer: NewAsciiRenderer(),
+		info:     new(GameInfo),
 	}, nil
 }
 
@@ -77,7 +79,7 @@ func (this *game) addApple() {
 func (this *game) frame() {
 	switch this.snek.Advance() {
 	case board.Apple:
-		this.snek.AddScore(appleScore)
+		this.info.score += appleScore
 		this.addApple()
 
 	case board.Invalid, board.Body:
@@ -85,12 +87,13 @@ func (this *game) frame() {
 		return
 	}
 
-	this.renderer.Render(this.board)
+	this.renderer.Render(this.board, this.info)
 }
 
 func (this *game) Start() {
 	this.addApple()
-	this.renderer.Render(this.board)
+	this.info.startTime = time.Now()
+	this.renderer.Render(this.board, this.info)
 
 	timer := time.NewTicker(time.Second / 8)
 

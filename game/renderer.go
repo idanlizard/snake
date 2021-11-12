@@ -4,6 +4,7 @@ import (
 	"fmt"
 	term "github.com/nsf/termbox-go"
 	"snake/board"
+	"time"
 )
 
 const (
@@ -16,7 +17,7 @@ const (
 
 type Renderer interface {
 	Start()
-	Render(board.Board)
+	Render(board.Board, *GameInfo)
 	Message(string)
 	Stop()
 }
@@ -40,18 +41,16 @@ func (this *asciiRenderer) Start() {
 	term.Init()
 }
 
-func (this *asciiRenderer) Render(b board.Board) {
+func (this *asciiRenderer) Render(b board.Board, info *GameInfo) {
 	n, m := b.Width(), b.Height()
-	rowLen := n + (n-1)*spaces + 3
+	rowLen := n + (n-1)*spaces + 2
 
 	rowNum := 0
-	for k := 0; k < rowLen-1; k++ {
+	for k := 0; k < rowLen; k++ {
 		term.SetChar(k, rowNum, verticalBorder)
 	}
 
-	term.SetChar(rowLen-1, rowNum, lineBreak)
 	rowNum++
-
 	for j := 0; j < m; j++ {
 		k := 0
 		term.SetChar(k, rowNum, horizontalBorder)
@@ -71,18 +70,25 @@ func (this *asciiRenderer) Render(b board.Board) {
 		term.SetChar(k, rowNum, this.tileChars[tile])
 		k++
 		term.SetChar(k, rowNum, horizontalBorder)
-		k++
-		term.SetChar(k, rowNum, lineBreak)
 		rowNum++
 	}
 
-	for k := 0; k < rowLen-1; k++ {
+	for k := 0; k < rowLen; k++ {
 		term.SetChar(k, rowNum, verticalBorder)
 	}
 
-	term.SetChar(rowLen-1, rowNum, lineBreak)
-
 	rowNum += 2
+	scoreStr := fmt.Sprintf("Score: %v", info.score)
+	for i, char := range scoreStr {
+		term.SetChar(i, rowNum, char)
+	}
+
+	rowNum++
+	timeStr := fmt.Sprintf("Time:  %v", time.Time{}.Add(time.Now().Sub(info.startTime)).Format("04:05"))
+	for i, char := range timeStr {
+		term.SetChar(i, rowNum, char)
+	}
+
 	term.Flush()
 }
 

@@ -7,8 +7,6 @@ type Snake interface {
 	Contains(board.Point) bool
 	Advance() board.Tile
 	Board() board.Board
-	Score() int
-	AddScore(int)
 	Direction() Direction
 	SetDirection(Direction)
 }
@@ -17,7 +15,6 @@ type snake struct {
 	board     board.Board
 	body      []board.Point
 	head      int
-	score     int
 	direction Direction
 }
 
@@ -59,14 +56,6 @@ func (this *snake) Contains(p board.Point) bool {
 
 func (this *snake) Board() board.Board {
 	return this.board
-}
-
-func (this *snake) Score() int {
-	return this.score
-}
-
-func (this *snake) AddScore(amount int) {
-	this.score += amount
 }
 
 func (this *snake) tailIndex() int {
