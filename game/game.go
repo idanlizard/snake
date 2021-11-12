@@ -32,6 +32,7 @@ type game struct {
 	once      sync.Once
 	renderer  Renderer
 	info      *GameInfo
+	fps       int
 }
 
 func (this *game) end() {
@@ -44,7 +45,7 @@ func (this *game) End() {
 	this.once.Do(this.end)
 }
 
-func New(n, m int) (Game, error) {
+func New(n, m, fps int) (Game, error) {
 	b, err := board.New(n, m)
 	if err != nil {
 		return nil, err
@@ -58,6 +59,7 @@ func New(n, m int) (Game, error) {
 		stop:     make(chan struct{}, 1),
 		renderer: NewAsciiRenderer(),
 		info:     new(GameInfo),
+		fps:      fps,
 	}, nil
 }
 
@@ -93,7 +95,7 @@ func (this *game) Start() {
 	this.info.startTime = time.Now()
 	this.renderer.Render(this.board, this.info)
 
-	timer := time.NewTicker(time.Second / 8)
+	timer := time.NewTicker(time.Second / time.Duration(this.fps))
 
 	listener := NewKeyboardListener()
 	defer listener.Stop()
