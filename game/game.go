@@ -1,7 +1,6 @@
 package game
 
 import (
-	"fmt"
 	term "github.com/nsf/termbox-go"
 	"snake/board"
 	"snake/snake"
@@ -36,7 +35,6 @@ type game struct {
 }
 
 func (this *game) end() {
-	this.renderer.Message(fmt.Sprintf("\n---------Game Over---------\nScore: %v", this.snek.Score()))
 	this.renderer.Stop()
 	this.stop <- struct{}{}
 	close(this.stop)

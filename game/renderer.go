@@ -18,7 +18,6 @@ const (
 type Renderer interface {
 	Start()
 	Render(board.Board, *GameInfo)
-	Message(string)
 	Stop()
 }
 
@@ -90,10 +89,6 @@ func (this *asciiRenderer) Render(b board.Board, info *GameInfo) {
 	}
 
 	term.Flush()
-}
-
-func (this *asciiRenderer) Message(s string) {
-	fmt.Println(s)
 }
 
 func (this *asciiRenderer) Stop() {
