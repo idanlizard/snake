@@ -98,6 +98,7 @@ func (this *game) Start() {
 	listener := NewKeyboardListener()
 	defer listener.Stop()
 
+	newDirection := this.snek.Direction()
 	for {
 		select {
 		case <-this.stop:
@@ -105,6 +106,7 @@ func (this *game) Start() {
 			return
 
 		case <-timer.C:
+			this.snek.SetDirection(newDirection)
 			this.frame()
 
 		case key := <-listener.Listen():
@@ -117,7 +119,7 @@ func (this *game) Start() {
 				break
 			}
 
-			this.snek.SetDirection(direction)
+			newDirection = direction
 		}
 	}
 }
